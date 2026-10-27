@@ -1,3 +1,7 @@
+var siteBase = (function () {
+  var el = document.currentScript || document.querySelector('script[src*="assets/js/main.js"]');
+  return el ? new URL("../../", el.src).pathname : "/";
+})();
 /*! For license information please see main.js.LICENSE.txt */
 (() => {
   var t = {
@@ -26945,8 +26949,8 @@
           async init() {
             const t = new gd(),
               e = [
-                t.loadAsync("/assets/texture/grain.webp"),
-                t.loadAsync("/assets/texture/blur.webp"),
+                t.loadAsync(siteBase + "assets/texture/grain.webp"),
+                t.loadAsync(siteBase + "assets/texture/blur.webp"),
               ],
               n = await Promise.all(e);
             (n[0].minFilter = 1003),
@@ -27001,10 +27005,11 @@
               this.updateView(),
               this.enter(),
               document.querySelectorAll("a").forEach((t) => {
+                const h = t.href;
                 "_blank" !== t.getAttribute("target") &&
                   (t.onclick = (e) => {
                     e.preventDefault(),
-                      window.history.pushState(null, "", t.href),
+                      window.history.pushState(null, "", h),
                       this.updateView();
                   });
               }),
@@ -27058,7 +27063,8 @@
               });
           },
           updateView() {
-            const t = window.location.pathname;
+            let t = window.location.pathname;
+            t.startsWith(siteBase) && (t = "/" + t.slice(siteBase.length));
             this.pagePaths.includes(t) ? this.switchPage(t) : this.switchPage("/"),
               this.logPageViewEvent();
           },
